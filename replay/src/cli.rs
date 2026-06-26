@@ -64,6 +64,10 @@ pub(crate) struct Args {
     #[arg(long)]
     pub(crate) max_active_sessions: Option<usize>,
 
+    /// Override CSV arrival_time with a deterministic session arrival rate in sessions/second.
+    #[arg(long)]
+    pub(crate) session_arrival_rate: Option<f64>,
+
     /// Validate and summarize the workload without contacting a serving backend.
     #[arg(long, default_value_t = false)]
     pub(crate) dry_run: bool,

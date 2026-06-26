@@ -135,6 +135,9 @@ Useful controls:
 # Bound active closed-loop sessions while still respecting arrival_time.
 --max-active-sessions 128
 
+# Override CSV arrival_time with deterministic spacing at 2 sessions/second.
+--session-arrival-rate 2
+
 # Skip rounds that exceed a known model context limit instead of sending them to the backend.
 --max-model-len 131072 --fail-on-context-overflow
 
@@ -170,6 +173,7 @@ Implemented:
 - workload summary and dry-run validation
 - per-session ordered replay
 - optional session-start scheduling from `arrival_time`
+- optional deterministic session-arrival-rate override
 - optional active-session concurrency limit
 - optional model-context validation and overflow skipping
 - session-internal closed-loop timing

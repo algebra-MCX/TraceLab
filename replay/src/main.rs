@@ -1,3 +1,4 @@
+mod arrival;
 mod backend;
 mod cli;
 mod record;
@@ -14,6 +15,7 @@ use std::sync::Arc;
 use std::time::Instant;
 use tokio::sync::{mpsc, Semaphore};
 
+use arrival::{apply_session_arrival_rate, validate_session_arrival_rate};
 use backend::GenerationClient;
 use cli::Args;
 use record::StepLog;
@@ -36,8 +38,14 @@ async fn main() -> Result<()> {
             "--fail-on-context-overflow requires --max-model-len"
         ));
     }
+    if let Some(rate) = args.session_arrival_rate {
+        validate_session_arrival_rate(rate)?;
+    }
 
-    let sessions = load_sessions(&args.trace, args.max_sessions)?;
+    let mut sessions = load_sessions(&args.trace, args.max_sessions)?;
+    if let Some(rate) = args.session_arrival_rate {
+        apply_session_arrival_rate(&mut sessions, rate)?;
+    }
     let workload_summary = WorkloadSummary::from_sessions(&sessions, args.max_model_len);
     workload_summary.print();
     if args.dry_run {
